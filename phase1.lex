@@ -39,6 +39,10 @@ int line = 1, position = 1;
 
 [a-z]*"_"?[a-z]+([0-9]*)? {printf("IDENT %s\n", yytext); position += yyleng;}
 
+([0-9]+[a-zA-Z_][0-9a-zA-Z_]*)|("_"[0-9a-zA-Z_]+) {printf("Error at line %d, column %d: identifier \"%s\" must begin with a letter\n",line, --position, yytext); exit(1);}
+
+[a-zA-Z]([0-9a-zA-Z_]*[0-9a-zA-Z]+)?"_" {printf("Error at line %d, column %d: identifier \"%s\" cannot end with an underscore\n",line, --position, yytext); exit(1);}
+
 ":=" {printf("ASSIGN\n"); position += yyleng;}
 ";" {printf("SEMICOLON\n"); position += yyleng;}
 ":" {printf("COLON\n"); position += yyleng;}
@@ -58,15 +62,16 @@ int line = 1, position = 1;
 ">" {printf("GT\n"); position += yyleng;}
 "<=" {printf("LTE\n"); position += yyleng;}
 ">=" {printf("GTE\n"); position += yyleng;}
+"##".* {line++; position = 1;}
 
 [0-9]+"."?[0-9]*[eE][+-]?[0-9]+ {printf("SCIENTIFIC NUMBER %s\n", yytext); position += yyleng;}
 [0-9]*"."?[0-9]+ {printf("NUMBER %s\n", yytext); position += yyleng;}
 
 [ \t]+ {position += yyleng;}
 
-. {printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n", line, position, yytext); exit(0);}
+. {printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n", line, --position, yytext); exit(0);}
 
-"\n" {printf(""); line++; position = 1;}
+"\n" {line++; position = 1;}
 
 %%
 

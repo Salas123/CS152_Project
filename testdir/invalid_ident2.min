@@ -1,8 +1,8 @@
-function test2;
+function test1;
 beginparams
 endparams
 beginlocals
 n_ : integer;
 endlocals
-beginprogram
-endprogram
+beginbody
+endbody

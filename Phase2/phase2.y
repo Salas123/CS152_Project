@@ -74,7 +74,7 @@ statements:      %empty
 
 statement:      var ASSIGN expression
 {printf("statement -> var ASSIGN expression\n");}
-                 | IF L_PAREN bool_exp R_PAREN THEN statements ENDIF
+                 | IF bool_exp THEN statements ENDIF
 		 {printf("statement -> IF bool_exp THEN statements ENDIF\n");}
 		 | IF bool_exp THEN statements ELSE statements ENDIF
 		 {printf("statement -> IF bool_exp THEN statements ELSE statements ENDIF\n");}
@@ -150,8 +150,8 @@ relation_and_exp:           relation_exp
                  {printf("relation_and_exp -> relation_exp AND relation_exp\n");}
 ;
 
-relation_exp:    expression comp expression
-{printf("relation_exp -> expression comp expression\n");}
+relation_exp:    L_PAREN expression comp expression R_PAREN
+{printf("relation_exp -> L_PAREN expression comp expression R_PAREN\n");}
                  | TRUE
 		 {printf("relation_exp -> TRUE\n");}
                  | FALSE

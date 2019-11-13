@@ -6,4 +6,4 @@ parser:  phase2.lex phase2.y
 	gcc -o parser phase2.tab.c lex.yy.c -lfl
 
 clean:
-	rm -rf minil mini_1.tab.* mini_1.output *~ lex.yy.c output.txt 
+	rm -rf parser phase2.tab.* phase2.output *~ lex.yy.c output.txt 

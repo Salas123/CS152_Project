@@ -74,7 +74,7 @@ statements:      %empty
 
 statement:      var ASSIGN expression
 {printf("statement -> var ASSIGN expression\n");}
-                 | IF bool_exp THEN statements ENDIF
+                 | IF L_PAREN bool_exp R_PAREN THEN statements ENDIF
 		 {printf("statement -> IF bool_exp THEN statements ENDIF\n");}
 		 | IF bool_exp THEN statements ELSE statements ENDIF
 		 {printf("statement -> IF bool_exp THEN statements ELSE statements ENDIF\n");}
@@ -92,6 +92,8 @@ statement:      var ASSIGN expression
 		 {printf("statement -> WRITE vars\n");}
                  | CONTINUE
 		 {printf("statement -> CONTINUE\n");}
+		 | RETURN expression
+		 {printf("statement -> RETURN expression\n");}
 ;
 
 var:             ident L_SQUARE_BRACKET expression R_SQUARE_BRACKET
@@ -129,9 +131,11 @@ term:            var
                  | NUMBER
 		 {printf("term -> NUMBER\n");}
                  | L_PAREN expression R_PAREN
-		 {printf("term -> L_PAREN expression R_PAREN\n");}
+		 {printf("term -> L_PAREN expression R_PAREN\n");}			
                  | SUB L_PAREN expression R_PAREN
 		 {printf("term -> SUB L_PAREN expression R_PAREN\n");}
+		 | ident L_PAREN expression R_PAREN
+		 {printf("term -> ident L_PAREN expression R_PAREN\n");}
 ;
 
 bool_exp:         relation_and_exp 

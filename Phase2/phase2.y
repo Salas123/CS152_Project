@@ -152,6 +152,8 @@ relation_and_exp:           relation_exp
 
 relation_exp:    L_PAREN expression comp expression R_PAREN
 {printf("relation_exp -> L_PAREN expression comp expression R_PAREN\n");}
+		 | expression comp expression
+		 {printf("relation_exp -> expression comp expression\n");}
                  | TRUE
 		 {printf("relation_exp -> TRUE\n");}
                  | FALSE

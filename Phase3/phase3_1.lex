@@ -1,6 +1,6 @@
 /* Miguel Rojas - Jesus Salas
    CS 152 - Fall 2019
-   Phase 2 */
+   Phase 3 */
 
 %{
 // Definitions

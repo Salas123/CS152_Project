@@ -1,44 +1,61 @@
 %{
+#define YY_NO_UNPUt
 #include <stdio.h>
 #include <stdlib.h>
-#include <string>
+#include <string.h>
+#include <map>
+#include <vector>
 
 void yyerror(const char* msg);
 extern int line;
 extern int position;
+char * programTitle;
+extern char * programName;
+std::string newtemp();
+std::string newlabel();
+int yylex();
 FILE * yyin;
+
+char empty[1]="";
+
+std::map<std::string, int> variables;
+ std::map<std::string, int> functions;
+  std::vector<std::string> reservedWords = {"FUNCTION", "BEGIN_PARAMS", "END_PARAMS", "BEGIN_LOCALS", "END_LOCALS", "BEGIN_BODY", "END_BODY", "INTEGER",
+    "ARRAY", "OF", "IF", "THEN", "ENDIF", "ELSE", "WHILE", "DO", "FOREACH", "IN", "BEGINLOOP", "ENDLOOP", "CONTINUE", "READ", "WRITE", "AND", "OR", 
+    "NOT", "TRUE", "FALSE", "RETURN", "SUB", "ADD", "MULT", "DIV", "MOD", "EQ", "NEQ", "LT", "GT", "LTE", "GTE", "L_PAREN", "R_PAREN", "L_SQUARE_BRACKET",
+    "R_SQUARE_BRACKET", "COLON", "SEMICOLON", "COMMA", "ASSIGN", "function", "Ident", "beginparams", "endparams", "beginlocals", "endlocals", "integer", 
+    "beginbody", "endbody", "beginloop", "endloop", "if", "endif", "foreach", "continue", "while", "else", "read", "do", "write"};
 %}
-
-
-#include<stack> 
-
 
 %union{
   char* id_val;
   int int_val;
-  vector <string> symbol;
-  vector <string> symType;
-  vector <string> operand;
-  vector <string> function_table;
-  vector <string> statements;
-  vector <string> params;
-  vector < vector <string> > ifLabel;
-  vector < vector <string> > loopLabel;
+  struct E {
+	char* place;
+	char* code;
+	bool array;
+  } expr;
 
- }
+  struct S {
+	char* code;
+  } stat;
+}
 
 %error-verbose
 %start input
 %token <id_val> IDENT
 %token <int_val> NUMBER
 %token FUNCTION BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS BEGIN_BODY END_BODY INTEGER ARRAY OF IF THEN ENDIF ELSE WHILE DO FOREACH IN BEGINLOOP ENDLOOP CONTINUE READ WRITE
-%left AND
-%left OR
+%type <expr> Identifiers Local Function
+%type <expr> Declarations Declaration
+%type <stat> Statements Statement ElseStatement
+%type <expr> Expression Expressions MultExp Term BoolExp RAExp RExp RExp1 Comp
+
+%left AND OR
 %right NOT
 %token TRUE FALSE RETURN
-%left SUB ADD MULT DIV MOD EQ NEQ LT GT LTE GTE
+%left SUB ADD MULT DIV MOD EQ NEQ LT GT LTE GTE ASSIGN
 %token L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET COLON SEMICOLON COMMA
-%left ASSIGN
 
 
 %%
@@ -189,18 +206,38 @@ comp:            EQ
                  {printf("comp -> GTE\n");}
 ;
 %%
+int yyparse();
+int yylex();
 
 int main(int argc, char **argv) {
 	if (argc > 1) {
 		yyin = fopen(argv[1], "r");
 		if (yyin == NULL){
 			printf("syntax: %s filename\n", argv[0]);
+			exit(1);
 		}
 	}
+	else {
+		yyin=stdin;
+	}
+	programTitle = strdup(argv[1]);
+
 	yyparse();
 	return 0;
 }
 		 
 void yyerror(const char* msg) {
   printf("** Line %d, position %d: %s\n", line, position, msg);
+}
+
+std::string newtemp() {
+	static int number = 0;
+	std::string temp = "_t" + std::to_string(number++);
+	return temp;
+}
+
+std::string newlabel() {
+	static int number = 0;
+	std::string label = 'L' + std::to_string(number++);
+	return label;
 }

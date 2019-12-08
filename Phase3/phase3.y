@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-#include <
+
 void yyerror(const char* msg);
 extern int line;
 extern int position;
@@ -52,7 +52,7 @@ input:           %empty
 function:	 FUNCTION ident SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY
 {printf("function -> FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY\n");}
 		 | FUNCTION ident L_PAREN expression R_PAREN statements
-		 {printf("function->FUNCTION ident L_PAREN expression R_PAREN");}
+		 {printf("function -> FUNCTION ident L_PAREN expression R_Parent statements");}
 	         | FUNCTION ident L_PAREN expression R_PAREN SEMICOLON
                  {printf("fucntion->FUNCTION ident L_PAREN expression R_PAREN");} 
 ;

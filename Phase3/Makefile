@@ -1,9 +1,9 @@
 CFLAGS = -g -Wall -ansi -pedantic
 
-parser:  phase2.lex phase2.y
-	bison -d -v phase2.y
-	flex phase2.lex	
-	gcc -o parser phase2.tab.c lex.yy.c -lfl
+parser: phase3_1.lex phase3_1.y
+	bison -d -v phase3_1.y
+	flex phase3_1.lex	
+	g++ $(CFLAGS) -std=c++11 -o parser phase3_1.tab.c lex.yy.c -lfl
 
 clean:
-	rm -rf minil mini_1.tab.* mini_1.output *~ lex.yy.c output.txt 
+	rm -rf parser phase3_1.tab.* phase3_1.output *~ lex.yy.c output.txt 

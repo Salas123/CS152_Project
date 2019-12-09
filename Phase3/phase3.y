@@ -30,12 +30,15 @@ std::map<std::string, int> variables;
 %union{
   char* id_val;
   int int_val;
+
+// expression attributes
   struct E {
 	char* place;
 	char* code;
 	bool array;
   } expr;
 
+// statement attributes
   struct S {
 	char* code;
   } stat;
@@ -93,7 +96,7 @@ declarations:    %empty
 ;
 
 ident:		 IDENT
-{printf("ident -> IDENT %s\n", $1);}
+{$$.place = strdup($1); $$.code = strdup(empty);}
 ;
 
 identifiers:     ident
@@ -185,25 +188,87 @@ relation_and_exp:           relation_exp
 ;
 
 relation_exp:    expression comp expression
-{printf("relation_exp -> expression comp expression\n");}
+{ std::string destination = newTemp();
+  std::string tempStr;
+
+  tempStr.append($1.code); // append first exp(non-terminal) code to tempStr
+  tempStr.append($3.code); // append second exp(non-terminal) code to tempStr
+
+}
                  | TRUE
-		 {printf("relation_exp -> TRUE\n");}
+		 { char tempArr[2] = "1"; // needs null terminator
+ 		   $$.place = strdup(tempArr);
+		   $$.code = strdup(empty);
+		 }
                  | FALSE
-		 {printf("relation_exp -> FALSE\n");}
+		 { char tempArr[2] = "0";
+		   $$.place = strdup(tempArr);
+		   $$.code = strdup(empty);
+		 }
+;
+
+functionIdent: 	 IDENT
+{
+  if (functions.find(std::string($1)) != functions.end()) {
+    char tempStr[128];
+    snprintf(tempStr, 128, "Redeclaration of function %s", $1);
+    yyerror(tempStr);
+  }
+  else {
+    functions.insert(std::pair<std::string,int>($1,0));
+  }
+  $$.place = strdup($1);
+  $$.code = strdup(empty);;
+}
+;
+
+local:		IDENT
+{
+  std::string variable($1);
+  if (variables.find(variable) != variables.end()) {
+    char tempStr[128];
+    snprintf(tempStr, 128, "Redeclaration of variable %s", variable.c_str());
+    yyerror(tempStr);
+  }
+  else {
+    variables.insert(std::pair<std::string,int>(variable,0));
+  }
+  $$.place = strdup($1);
+  $$.code = strdup(empty);;
+
+}
 ;
 
 comp:            EQ
-{printf("comp -> EQ\n");}
+{ std::string tempStr = "== ";
+  $$.place = strdup(tempStr.c_str());
+  $$.code = strdup(empty);
+}
                  | NEQ
-                 {printf("comp -> NEQ\n");}
+                 { std::string tempStr = "!= ";
+		   $$.place = strdup(tempStr.c_str());
+		   $$.code = strdup(empty);
+		 }
                  | LT
-                 {printf("comp -> LT\n");}
+                 { std::string tempStr = "> ";
+		   $$.place = strdup(tempStr.c_str());
+		   $$.code = strdup(empty);
+		 }
                  | GT
-                 {printf("comp -> GT\n");}
+                 { std::string tempStr = "< ";
+		   $$.place = strdup(tempStr.c_str());
+		   $$.code = strdup(empty); 
+		 }
                  | LTE
-                 {printf("comp -> LTE\n");}
+                 { std::string tempStr = "<= ";
+  		   $$.place = strdup(tempStr.c_str());
+  		   $$.code = strdup(empty);
+		 }
                  | GTE
-                 {printf("comp -> GTE\n");}
+                 { std::string tempStr = ">= ";
+  		   $$.place = strdup(tempStr.c_str());
+  		   $$.code = strdup(empty);
+		 }
 ;
 %%
 int yyparse();

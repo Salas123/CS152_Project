@@ -156,65 +156,298 @@ expression:      multiplicative_expression
 ;
 
 multiplicative_expression:         term
-{printf("multiplicative_expression -> term\n");}
-                 | term MULT term
-		 {printf("multiplicative_expression -> term MULT term\n");}
-                 | term DIV term
-		 {printf("multiplicative_expression -> term DIV term\n");}
-                 | term MOD term
-		 {printf("multiplicative_expression -> term MOD term\n");}
+{
+  $$.code = strdup($1.code);
+  $$.place = strdup($1.place);
+}
+                 | term MULT multiplicative_expression
+		 {
+		    $$.place = strdup(newTemp().c_str());
+  
+  		   std::string tempStr;
+  		   tempStr.append(". ");
+  		   tempStr.append($$.place);
+  		   tempStr.append("\n");
+  		   tempStr.append($1.code);
+  		   tempStr.append($3.code);
+  		   tempStr.append("* ");
+  		   tempStr.append($$.place);
+  		   tempStr.append(", ");
+  		   tempStr.append($1.place);
+  		   tempStr.append(", ");
+  		   tempStr.append($3.place);
+  		   tempStr.append("\n");
+
+  		   $$.code = strdup(tempStr.c_str());
+		 }
+                 | term DIV multiplicative_expression
+		 { 
+		   $$.place = strdup(newTemp().c_str());
+
+                   std::string tempStr;
+                   tempStr.append(". ");
+                   tempStr.append($$.place);
+                   tempStr.append("\n");
+                   tempStr.append($1.code);
+                   tempStr.append($3.code);
+                   tempStr.append("/ ");
+                   tempStr.append($$.place);
+                   tempStr.append(", ");
+                   tempStr.append($1.place);
+                   tempStr.append(", ");
+                   tempStr.append($3.place);
+                   tempStr.append("\n");
+
+                   $$.code = strdup(tempStr.c_str());	
+		 }
+                 | term MOD multiplicative_expression
+		 {
+		   $$.place = strdup(newTemp().c_str());
+
+                   std::string tempStr;
+                   tempStr.append(". ");
+                   tempStr.append($$.place);
+                   tempStr.append("\n");
+                   tempStr.append($1.code);
+                   tempStr.append($3.code);
+                   tempStr.append("% ");
+                   tempStr.append($$.place);
+                   tempStr.append(", ");
+                   tempStr.append($1.place);
+                   tempStr.append(", ");
+                   tempStr.append($3.place);
+                   tempStr.append("\n");
+
+                   $$.code = strdup(tempStr.c_str());
+		 }
 ;
 
 term:            var
-{printf("term -> var\n");}
+{
+ 
+  if ($$.array == true) 
+  {
+    std::string tempStr;
+    std::string tempStr2 = newTemp();
+    
+    
+    tempStr.append($1.code);
+    tempStr.append(". ");
+    tempStr.append(tempStr2);
+    tempStr.append("\n");
+    tempStr.append("=[] ");
+    tempStr.append(tempStr2);
+    tempStr.append(", ");
+    tempStr.append($1.place);
+    tempStr.append("\n");
+    
+    $$.code = strdup(tempStr.c_str());
+    $$.place = strdup(tempStr2.c_str());
+    $$.array = false;
+  }
+  
+  else 
+  {
+    $$.code = strdup($1.code);
+    $$.place = strdup($1.place);
+  }
+}
                  | NUMBER
-		 {printf("term -> NUMBER\n");}
+		 {
+  		   $$.code = strdup(empty);
+  		   $$.place = strdup(std::to_string($1).c_str());
+		 }
                  | L_PAREN expression R_PAREN
-		 {printf("term -> L_PAREN expression R_PAREN\n");}
+		 {
+		   $$.code = strdup($2.code);
+  		   $$.place = strdup($2.place);
+		 }
                  | SUB L_PAREN expression R_PAREN
-		 {printf("term -> SUB L_PAREN expression R_PAREN\n");}
+		 {
+		   $$.place = strdup($3.place);
+  		   std::string tempStr;
+  		   tempStr.append($3.code);
+  		   tempStr.append("* ");
+  		   tempStr.append($3.place);
+  		   tempStr.append(", ");
+  		   tempStr.append($3.place);
+  		   tempStr.append(", -1\n");
+  		   $$.code = strdup(tempStr.c_str());
+		 }
+		 | SUB NUMBER
+		 {
+		   std::string tempStr;
+  		   tempStr.append("-");
+  		   tempStr.append(std::to_string($2));
+  		   $$.code = strdup(empty);
+  		   $$.place = strdup(tempStr.c_str());
+		 }
+		 | SUB var
+		 {
+		 	$$.place = strdup(newTemp().c_str());
+  			std::string tempStr;
+  			tempStr.append($2.code);
+  			tempStr.append(". ");
+  			tempStr.append($$.place);
+  			tempStr.append("\n");
+  			if ($2.array) {
+    				tempStr.append("=[] ");
+    				tempStr.append($$.place);
+    				tempStr.append(", ");
+    				tempStr.append($2.place);
+    				tempStr.append("\n");
+  			}
+  			else {
+    			tempStr.append("= ");
+    			tempStr.append($$.place);
+    			tempStr.append(", ");
+    			tempStr.append($2.place);
+    			tempStr.append("\n");
+  			}
+  
+			tempStr.append("* ");
+  			tempStr.append($$.place);
+  			tempStr.append(", ");
+  			tempStr.append($$.place);
+  			tempStr.append(", -1\n");
+  
+  			$$.code = strdup(temp.c_str());
+  			$$.array = false;
+		 }
 ;
 
 bool_exp:        relation_and_exp 
-{printf("bool_exp -> relation_and_exp\n");}
+{ 
+  $$.place = strdup($1.place);
+  $$.code = strdup($1.code);
+}
                  | relation_and_exp OR bool_exp
-                 {printf("bool_exp -> relation_and_exp OR relation_and_exp\n");}
+                 {
+		   std::string destination = newTemp();
+  		   std::string tempStr;
+
+  		   tempStr.append($1.code);
+  		   tempStr.append($3.code);
+  		   tempStr.append(". ");
+  		   tempStr.append(destination);
+  		   tempStr.append("\n");
+  
+  		   tempStr.append("|| ");
+  		   tempStr.append(destination);
+  		   tempStr.append(", ");
+  		   tempStr.append($1.place);
+  		   tempStr.append(", ");
+  		   tempStr.append($3.place);
+  		   tempStr.append("\n");
+  
+  		   $$.code = strdup(tempStr.c_str());
+  		   $$.place = strdup(destination.c_str());
+		 }
 ;
 
 relation_and_exp:           relation_exp
-{printf("relation_and_exp -> relation_exp\n");}
-                 | relation_exp AND relation_exp
-                 {printf("relation_and_exp -> relation_exp AND relation_exp\n");}
+{ 
+  $$.place = strdup($1.place);
+  $$.code = strdup($1.code);
+}
+                 | relation_exp AND relation_and_exp
+                 {
+		   std::string destination = newTemp();
+  		   std::string tempStr;
+		   // appending a relation_exp, relation_and_exp
+  		   tempStr.append($1.code);
+  		   tempStr.append($3.code);
+  		   tempStr.append(". ");
+  		   tempStr.append(destination);
+  		   tempStr.append("\n");
+  		   // && relation_and_exp	
+  		   tempStr.append("&& ");
+  		   tempStr.append(destination);
+  		   tempStr.append(", ");
+  		   tempStr.append($1.place); // appending relation_exp place
+  		   tempStr.append(", ");
+  		   tempStr.append($3.place);
+  		   tempStr.append("\n");
+  
+     		   $$.code = strdup(temp.c_str());
+  		   $$.place = strdup(dest.c_str());	
+		 }
 ;
 
-relation_exp:    expression comp expression
+relation_exp: 	  relation_exp2
+{
+  $$.place = strdup($1.place);
+  $$.code = strdup($1.code);
+}
+
+		  | NOT relation_exp2
+		    {
+			std::string destination = newTemp();
+  			std::string tempStr;
+
+  			tempStr.append($2.code);
+  			tempStr.append(". ");
+  			tempStr.append(destination);
+  			tempStr.append("\n");
+  
+  			tempStr.append("! ");
+  			tempStr.append(destination);
+  			tempStr.append(", ");
+  			tempStr.append($2.place);
+  			tempStr.append("\n");
+  
+  			$$.code = strdup(tempStr.c_str());
+  			$$.place = strdup(destination.c_str());	
+		    }
+
+relation_exp2:    expression comp expression
 { std::string destination = newTemp();
   std::string tempStr;
 
   tempStr.append($1.code); // append first exp(non-terminal) code to tempStr
   tempStr.append($3.code); // append second exp(non-terminal) code to tempStr
-
+  tempStr.append(". ");
+  tempStr.append(destination);
+  tempStr.append("\n");
+  tempStr.append($2.place);
+  tempStr.append(dest);
+  tempStr.append(", ");
+  tempStr.append($1.place);
+  tempStr.append(", ");
+  tempStr.append($3.place);
+  tempStr.append("\n");
+  
+  $$.code = strdup(tempStr.c_str());
+  $$.place = strdup(destination.c_str());
 }
-                 | TRUE
-		 { char tempArr[2] = "1"; // needs null terminator
- 		   $$.place = strdup(tempArr);
-		   $$.code = strdup(empty);
+		 | L_PAREN bool_exp R_PAREN
+		 {
+		   $$.place = strdup($2.place);
+  	           $$.code = strdup($2.code);
 		 }
+		 | TRUE
+                 { char tempArr[2] = "1"; // needs null terminator
+                   $$.place = strdup(tempArr);
+                   $$.code = strdup(empty);
+                 }
                  | FALSE
-		 { char tempArr[2] = "0";
-		   $$.place = strdup(tempArr);
-		   $$.code = strdup(empty);
-		 }
+                 { char tempArr[2] = "0";
+                   $$.place = strdup(tempArr);
+                   $$.code = strdup(empty);
+                 }
+
 ;
 
 functionIdent: 	 IDENT
 {
-  if (functions.find(std::string($1)) != functions.end()) {
+  if (functions.find(std::string($1)) != functions.end()) 
+  {
     char tempStr[128];
     snprintf(tempStr, 128, "Redeclaration of function %s", $1);
     yyerror(tempStr);
   }
-  else {
+  else 
+  {
     functions.insert(std::pair<std::string,int>($1,0));
   }
   $$.place = strdup($1);

@@ -49,10 +49,10 @@ std::map<std::string, int> variables;
 %token <id_val> IDENT
 %token <int_val> NUMBER
 %token FUNCTION BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS BEGIN_BODY END_BODY INTEGER ARRAY OF IF THEN ENDIF ELSE WHILE DO FOREACH IN BEGINLOOP ENDLOOP CONTINUE READ WRITE
-%type <expr> Identifiers Local Function
-%type <expr> Declarations Declaration
-%type <stat> Statements Statement ElseStatement
-%type <expr> Expression Expressions MultExp Term BoolExp RAExp RExp RExp1 Comp
+%type <expr> identifiers local function
+%type <expr> declarations declaration
+%type <stat> statements statement
+%type <expr> expression multiplicative_expression term bool_exp relation_and_exp relation_exp comp
 
 %left AND OR
 %right NOT

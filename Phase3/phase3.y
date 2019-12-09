@@ -102,8 +102,21 @@ function:	 FUNCTION functionIdent SEMICOLON BEGIN_PARAMS declarations END_PARAMS
   }
   tempString.append(initial);
   tempString.append($8.code);
-  std::string statements($11.code);
-  
+std::string initial2 = $8.code;  
+std::string statements($11.code);
+ 
+while (initial2.find(".") != std::string::npos) {
+    size_t position = initial2.find(".");
+    initial2.replace(position, 1, "=");
+    std::string para = ", $";
+    para.append(std::to_string(p_num++));
+    para.append("\n");
+    initial2.replace(initial2.find("\n", position), 1, para);
+  }
+
+tempString.append(initial2);
+tempString.append($11.code);
+
 if (statements.find("continue") != std::string::npos) {
     printf("ERROR: Continue outside loop in function %s\n", $2.place);
   }
@@ -964,6 +977,7 @@ relation_exp2:    expression comp expression
   std::string tempStr;
 
   tempStr.append($1.code); // append first exp(non-terminal) code to tempStr
+  tempStr.append($2.code);
   tempStr.append($3.code); // append second exp(non-terminal) code to tempStr
   tempStr.append(". ");
   tempStr.append(destination);
@@ -995,40 +1009,6 @@ relation_exp2:    expression comp expression
                    $$.code = strdup(empty);
                  }
 
-;
-
-functionIdent: 	 IDENT
-{
-  if (functions.find(std::string($1)) != functions.end()) 
-  {
-    char tempStr[128];
-    snprintf(tempStr, 128, "Redeclaration of function %s", $1);
-    yyerror(tempStr);
-  }
-  else 
-  {
-    functions.insert(std::pair<std::string,int>($1,0));
-  }
-  $$.place = strdup($1);
-  $$.code = strdup(empty);;
-}
-;
-
-local:		IDENT
-{
-  std::string variable($1);
-  if (variables.find(variable) != variables.end()) {
-    char tempStr[128];
-    snprintf(tempStr, 128, "Redeclaration of variable %s", variable.c_str());
-    yyerror(tempStr);
-  }
-  else {
-    variables.insert(std::pair<std::string,int>(variable,0));
-  }
-  $$.place = strdup($1);
-  $$.code = strdup(empty);;
-
-}
 ;
 
 comp:            EQ
@@ -1104,12 +1084,12 @@ void yyerror(const char* msg) {
 
 std::string newtemp() {
 	static int number = 0;
-	std::string temp = "_t" + std::to_string(number++);
+	std::string temp = "__temp__" + std::to_string(number++);
 	return temp;
 }
 
 std::string newlabel() {
 	static int number = 0;
-	std::string label = 'L' + std::to_string(number++);
+	std::string label = "__label__" + std::to_string(number++);
 	return label;
 }

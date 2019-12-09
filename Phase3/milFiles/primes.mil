@@ -1,0 +1,192 @@
+func main
+. n
+.[] a, 1000
+. i
+. j
+. x
+. sqrt_n
+= n, $0
+=[] a, 1000, $1
+= i, $2
+= j, $3
+= x, $4
+= sqrt_n, $5
+.< n
+= x, n
+: __label__0
+. __temp__0
+/ __temp__0, n, x
+. __temp__1
+< __temp__1, x, __temp__0
+?:= __label__1, __temp__1
+:= __label__2
+: __label__1
+. __temp__4
+. __temp__2
+/ __temp__2, n, x
+. __temp__3
++ __temp__3, x, __temp__2
+/ __temp__4, __temp__3, 2
+= x, __temp__4
+:= __label__0
+: __label__2
+= sqrt_n, x
+= i, 2
+: __label__3
+. __temp__5
+<= __temp__5, i, n
+?:= __label__4, __temp__5
+:= __label__5
+: __label__4
+[]= a, i, 0
+. __temp__6
++ __temp__6, i, 1
+= i, __temp__6
+:= __label__3
+: __label__5
+= i, 2
+: __label__11
+. __temp__7
+<= __temp__7, i, sqrt_n
+?:= __label__12, __temp__7
+:= __label__13
+: __label__12
+. __temp__8
+=[] __temp__8, a, i
+. __temp__9
+== __temp__9, __temp__8, 0
+?:= __label__9, __temp__9
+:= __label__10
+: __label__9
+. __temp__10
++ __temp__10, i, i
+= j, __temp__10
+: __label__6
+. __temp__11
+<= __temp__11, j, n
+?:= __label__7, __temp__11
+:= __label__8
+: __label__7
+[]= a, j, 1
+. __temp__12
++ __temp__12, j, i
+= j, __temp__12
+:= __label__6
+: __label__8
+: __label__10
+. __temp__13
++ __temp__13, i, 1
+= i, __temp__13
+:= __label__11
+: __label__13
+= i, 2
+: __label__16
+. __temp__14
+<= __temp__14, i, n
+?:= __label__17, __temp__14
+:= __label__18
+: __label__17
+. __temp__15
+=[] __temp__15, a, i
+. __temp__16
+== __temp__16, __temp__15, 0
+?:= __label__14, __temp__16
+:= __label__15
+: __label__14
+.> i
+: __label__15
+. __temp__17
++ __temp__17, i, 1
+= i, __temp__17
+:= __label__16
+: __label__18
+.< n
+= x, n
+: __label__0
+. __temp__0
+/ __temp__0, n, x
+. __temp__1
+< __temp__1, x, __temp__0
+?:= __label__1, __temp__1
+:= __label__2
+: __label__1
+. __temp__4
+. __temp__2
+/ __temp__2, n, x
+. __temp__3
++ __temp__3, x, __temp__2
+/ __temp__4, __temp__3, 2
+= x, __temp__4
+:= __label__0
+: __label__2
+= sqrt_n, x
+= i, 2
+: __label__3
+. __temp__5
+<= __temp__5, i, n
+?:= __label__4, __temp__5
+:= __label__5
+: __label__4
+[]= a, i, 0
+. __temp__6
++ __temp__6, i, 1
+= i, __temp__6
+:= __label__3
+: __label__5
+= i, 2
+: __label__11
+. __temp__7
+<= __temp__7, i, sqrt_n
+?:= __label__12, __temp__7
+:= __label__13
+: __label__12
+. __temp__8
+=[] __temp__8, a, i
+. __temp__9
+== __temp__9, __temp__8, 0
+?:= __label__9, __temp__9
+:= __label__10
+: __label__9
+. __temp__10
++ __temp__10, i, i
+= j, __temp__10
+: __label__6
+. __temp__11
+<= __temp__11, j, n
+?:= __label__7, __temp__11
+:= __label__8
+: __label__7
+[]= a, j, 1
+. __temp__12
++ __temp__12, j, i
+= j, __temp__12
+:= __label__6
+: __label__8
+: __label__10
+. __temp__13
++ __temp__13, i, 1
+= i, __temp__13
+:= __label__11
+: __label__13
+= i, 2
+: __label__16
+. __temp__14
+<= __temp__14, i, n
+?:= __label__17, __temp__14
+:= __label__18
+: __label__17
+. __temp__15
+=[] __temp__15, a, i
+. __temp__16
+== __temp__16, __temp__15, 0
+?:= __label__14, __temp__16
+:= __label__15
+: __label__14
+.> i
+: __label__15
+. __temp__17
++ __temp__17, i, 1
+= i, __temp__17
+:= __label__16
+: __label__18
+endfunc

@@ -1,34 +1,62 @@
 func fibonacci
 . k
 = k, $0
-. _t0
-<= _t0, k, 1
-?:= L0, _t0
-:= L1
-: L0
+. __temp__0
+<= __temp__0, k, 1
+?:= __label__0, __temp__0
+:= __label__1
+: __label__0
 ret 1
-: L1
-. _t1
-- _t1, k, 1
-param _t1
-. _t2
-call fibonacci, _t2
-. _t3
-- _t3, k, 2
-param _t3
-. _t4
-call fibonacci, _t4
-. _t5
-+ _t5, _t2, _t4
-ret _t5
+: __label__1
+. __temp__1
+- __temp__1, k, 1
+param __temp__1
+. __temp__2
+call fibonacci, __temp__2
+. __temp__3
+- __temp__3, k, 2
+param __temp__3
+. __temp__4
+call fibonacci, __temp__4
+. __temp__5
++ __temp__5, __temp__2, __temp__4
+ret __temp__5
+. __temp__0
+<= __temp__0, k, 1
+?:= __label__0, __temp__0
+:= __label__1
+: __label__0
+ret 1
+: __label__1
+. __temp__1
+- __temp__1, k, 1
+param __temp__1
+. __temp__2
+call fibonacci, __temp__2
+. __temp__3
+- __temp__3, k, 2
+param __temp__3
+. __temp__4
+call fibonacci, __temp__4
+. __temp__5
++ __temp__5, __temp__2, __temp__4
+ret __temp__5
 endfunc
 func main
 . n
 . fib_n
+= n, $0
+= fib_n, $1
 .< n
 param n
-. _t6
-call fibonacci, _t6
-= fib_n, _t6
+. __temp__6
+call fibonacci, __temp__6
+= fib_n, __temp__6
+.> fib_n
+.< n
+param n
+. __temp__6
+call fibonacci, __temp__6
+= fib_n, __temp__6
 .> fib_n
 endfunc

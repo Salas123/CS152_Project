@@ -155,6 +155,36 @@ expression:      multiplicative_expression
 		 {printf("expression -> multiplicative_expression SUB multiplicative_expression\n");}
 ;
 
+expression2:     %empty
+{
+  $$.code = strdup(empty);
+  $$.place = strdup(empty);
+}
+		| expression COMMA expression2
+		{
+  	          std::string tempStr;
+  		  tempStr.append($1.code);
+  		  tempStr.append("param ");
+  		  tempStr.append($1.place);
+  		  tempStr.append("\n");
+  		  tempStr.append($3.code);
+
+  		  $$.code = strdup(tempStr.c_str());
+  		  $$.place = strdup(empty);
+		}
+		| expression
+		{
+  		  std::string tempStr;
+  		  tempStr.append($1.code);
+  		  tempStr.append("param ");
+  		  tempStr.append($1.place);
+  		  tempStr.append("\n");
+
+  		  $$.code = strdup(tempStr.c_str());
+  		  $$.place = strdup(empty);
+		}
+;
+
 multiplicative_expression:         term
 {
   $$.code = strdup($1.code);

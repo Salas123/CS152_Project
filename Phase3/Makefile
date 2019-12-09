@@ -7,4 +7,7 @@ parser: phase3.lex phase3.y
 	rm -f lex.yy.c
 
 clean:
-	rm -rf parser phase3.tab.* phase3.output *~ lex.yy.c output.txt 
+	rm -rf parser phase3.tab.* phase3.output *~ lex.yy.c output.txt
+
+test: parser
+	./parser fibonacci.min > ./milFiles/fibonacci.mil

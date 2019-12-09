@@ -5,8 +5,10 @@
 %{
 // Definitions
 #include "phase3.tab.h"
+#include <string>
 
 int line = 1, position = 1;
+char * programTitle;
 %}
 
 %%
@@ -76,4 +78,23 @@ int line = 1, position = 1;
 "\n" {line++; position = 1;}
 
 %%                                                     
+int yyparse();
+int yylex();
 
+int main(int argc, char* argv[]) {
+  if (argc == 2) {
+    yyin = fopen(argv[1], "r");
+    if (yyin == 0) {
+      printf("Error opening file: %s\n", argv[1]);
+      exit(1);
+    }
+  }
+  else {
+    yyin = stdin;
+  }
+  programTitle = strdup(argv[1]);
+  
+  yyparse();
+  
+  return 0;
+}

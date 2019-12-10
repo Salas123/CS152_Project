@@ -102,21 +102,7 @@ function:	 FUNCTION functionIdent SEMICOLON BEGIN_PARAMS declarations END_PARAMS
   }
   tempString.append(initial);
   tempString.append($8.code);
-std::string initial2 = $8.code;  
-std::string statements($11.code);
- 
-while (initial2.find(".") != std::string::npos) {
-    size_t position = initial2.find(".");
-    initial2.replace(position, 1, "=");
-    std::string para = ", $";
-    para.append(std::to_string(p_num++));
-    para.append("\n");
-    initial2.replace(initial2.find("\n", position), 1, para);
-  }
-
-tempString.append(initial2);
-tempString.append($11.code);
-
+  std::string statements($11.code); 
 if (statements.find("continue") != std::string::npos) {
     printf("ERROR: Continue outside loop in function %s\n", $2.place);
   }
